@@ -1,36 +1,43 @@
-from datetime import datetime
+#from datetime import datetime
+# Import the model module from the current directory
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_cors import CORS
+
+#Impor the model module from the ml folder
+import ml as model
+
 app = Flask(__name__)
 
 CORS(app)
+
+# Create a global variable to store the input data
+input_data = {}
 
 @app.route('/')
 def index():
    print('Request for index page received')
    return render_template('index.html')
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/api/request', methods=['POST'])
-@crossdomain(origin='*')
 def api_request():
-    print('Request for api received')
-    print('Request received at: ', datetime.now())
-    print('Request received from: ', request.remote_addr)
-    print('Request received with data: ', request.data)
+    print('Request for api request received')
+    userInput = request.data.decode('utf-8')
+    print(userInput)
     return 'ok'
+
+@app.route('/api/predict', methods=['GET'])
+def api_predict():
+    print('Request for api predict received')
+    userInput = request.data.decode('utf-8')
+    print(userInput)
+    modelAnswer = model.predict(userInput)
+    return modelAnswer
 
 @app.route('/api/response', methods=['GET'])
 def api_response():
-    print('Response for api received')
-    print('Response received at: ', datetime.now())
-    print('Response received from: ', request.remote_addr)
-    print('Response received with data: ', request.data)
-    return 'ok'
+    # Check if the user has requested a response
+    print('Request for api response received')
 
 @app.route('/hello', methods=['POST'])
 def hello():
