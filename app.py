@@ -1,5 +1,6 @@
 #from datetime import datetime
 # Import the model module from the current directory
+from sre_constants import SUCCESS
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from flask_cors import CORS
 
@@ -11,7 +12,10 @@ app = Flask(__name__)
 CORS(app)
 
 # Create a global variable to store the input data
-input_data = {}
+with open('./sample.json', 'r') as f:
+    sampleResponse = f.read()
+
+#print(sampleResponse)
 
 @app.route('/')
 def index():
@@ -19,13 +23,13 @@ def index():
    return render_template('index.html')
 
 
-@app.route('/api/request', methods=['POST'])
+@app.route('/api/request', methods=['POST', 'GET'])
 def api_request():
-    print('Request for api request received')
-    userInput = request.data.decode('utf-8')
-    print(userInput)
-    return 'ok'
-
+    if request.method == 'POST':
+        print('Request for api request received')
+        print(request.data.decode('utf-8'))
+        return sampleResponse
+"""
 @app.route('/api/predict', methods=['GET'])
 def api_predict():
     print('Request for api predict received')
@@ -34,11 +38,12 @@ def api_predict():
     modelAnswer = model.predict(userInput)
     return modelAnswer
 
-@app.route('/api/response', methods=['GET'])
+@app.route('/api/response')
 def api_response():
-    # Check if the user has requested a response
+    #Send the sample response to the frontend via HTTP GET
     print('Request for api response received')
-
+    return sampleResponse
+"""
 @app.route('/hello', methods=['POST'])
 def hello():
    name = request.form.get('name')
