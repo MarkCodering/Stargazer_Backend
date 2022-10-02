@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from flask_cors import CORS
 app = Flask(__name__)
 
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
 @app.route('/')
 def index():
@@ -16,6 +16,7 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/api/request', methods=['POST'])
+@crossdomain(origin='*')
 def api_request():
     print('Request for api received')
     print('Request received at: ', datetime.now())
